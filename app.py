@@ -2,15 +2,14 @@ import streamlit as st
 import io
 import os
 
-# ───────────────────────────────────────────────
-# ייבוא הלוגיקה שלך
-# ───────────────────────────────────────────────
-from logic import process_text  # ← שנה ל־import שלך
+from transpose_harmony import file_transpose_harmony as process_text
+file_transpose_harmony(uploaded_file, shift) 
 
 
-# ───────────────────────────────────────────────
-# פונקציות קריאה/כתיבה לכל סוג קובץ
-# ───────────────────────────────────────────────
+import streamlit as st
+import io
+import os
+
 
 def read_file(uploaded_file) -> str:
     ext = os.path.splitext(uploaded_file.name)[1].lower()
@@ -30,11 +29,10 @@ def read_file(uploaded_file) -> str:
         return "\n".join(para.text for para in doc.paragraphs)
 
     else:
-        raise ValueError(f"סוג קובץ לא נתמך: {ext}")
+        raise ValueError(f"Unsupported file type: {ext}")
 
 
 def write_file(text: str, original_filename: str) -> tuple[bytes, str]:
-    """מחזיר (bytes של הקובץ, mime type)"""
     ext = os.path.splitext(original_filename)[1].lower()
 
     if ext == ".txt":
@@ -45,8 +43,7 @@ def write_file(text: str, original_filename: str) -> tuple[bytes, str]:
         doc = fitz.open()
         page = doc.new_page()
         page.insert_text((50, 50), text, fontsize=11)
-        pdf_bytes = doc.tobytes()
-        return pdf_bytes, "application/pdf"
+        return doc.tobytes(), "application/pdf"
 
     elif ext == ".docx":
         from docx import Document
@@ -58,47 +55,32 @@ def write_file(text: str, original_filename: str) -> tuple[bytes, str]:
         return buf.getvalue(), "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
 
     else:
-        raise ValueError(f"סוג קובץ לא נתמך: {ext}")
+        raise ValueError(f"Unsupported file type: {ext}")
 
 
-# ───────────────────────────────────────────────
-# ממשק המשתמש
-# ───────────────────────────────────────────────
+# ── UI ──────────────────────────────────────────
 
-st.set_page_config(page_title="Harmonic Modulation", page_icon="🎵")
-st.title("🎵 Harmonic Modulation")
-st.write("Upload a file with harmony and get it modulated")
+st.set_page_config(page_title="Append Number to File", page_icon="🔢")
+st.title("🔢 Append Number to File")
+st.write("Upload a file and enter a number — the number will be appended at the end.")
 
-uploaded_file = st.file_uploader(
-    "Choose a file",
-    type=["txt", "pdf", "docx"]
-)
+uploaded_file = st.file_uploader("Choose a file", type=["txt", "pdf", "docx"])
+number = st.number_input("Number to append", step=1)
 
-if uploaded_file:
+if uploaded_file and st.button("Process"):
     try:
-        # Read
         original_text = read_file(uploaded_file)
+        result_text = original_text + f"\n{int(number)}"
 
-        # Show original
-        with st.expander("Original text"):
-            st.text(original_text)
-
-        # Process
-        with st.spinner("Processing..."):
-            result_text = process_text(original_text)  # ← your logic
-
-        # Show result
-        with st.expander("Modulated text", expanded=True):
+        with st.expander("Result preview"):
             st.text(result_text)
 
-        # Write and create download button
         output_bytes, mime = write_file(result_text, uploaded_file.name)
-        output_filename = "modulated_" + uploaded_file.name
 
         st.download_button(
-            label="⬇️ Download modulated file",
+            label="⬇️ Download file",
             data=output_bytes,
-            file_name=output_filename,
+            file_name="output_" + uploaded_file.name,
             mime=mime
         )
 
