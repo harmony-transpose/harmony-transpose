@@ -2,6 +2,10 @@ import streamlit as st
 import io
 import os
 
+from transpose_harmony import transpose_harmony
+
+#streamlit run app.py
+
 def read_file(uploaded_file) -> str:
     ext = os.path.splitext(uploaded_file.name)[1].lower()
 
@@ -23,7 +27,7 @@ def read_file(uploaded_file) -> str:
         raise ValueError(f"Unsupported file type: {ext}")
 
 
-def write_file(text: str, original_filename: str) -> tuple[bytes, str]:
+def write_file(text: str, original_filename: str):
     ext = os.path.splitext(original_filename)[1].lower()
 
     if ext == ".txt":
@@ -53,14 +57,14 @@ def write_file(text: str, original_filename: str) -> tuple[bytes, str]:
 
 st.set_page_config(page_title="Append Number to File", page_icon="🔢")
 st.title("🔢 Append Number to File")
-st.write("Upload a file and enter a number — the number will be appended at the end.")
+st.write("Upload a file and enter requested tranpose:")
 
 uploaded_file = st.file_uploader("Choose a file", type=["txt", "pdf", "docx"])
 shift = st.number_input("Transpose (semitones): ", step=1)
 
 if uploaded_file and st.button("Process"):
     try:
-        original_text = read_file(uploaded_file)
+        harmony_string = read_file(uploaded_file)
         result_text = transpose_harmony(harmony_string, shift)
 
         with st.expander("Result preview"):
