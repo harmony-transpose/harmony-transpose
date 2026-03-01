@@ -2,15 +2,6 @@ import streamlit as st
 import io
 import os
 
-from transpose_harmony import file_transpose_harmony as process_text
-file_transpose_harmony(uploaded_file, shift) 
-
-
-import streamlit as st
-import io
-import os
-
-
 def read_file(uploaded_file) -> str:
     ext = os.path.splitext(uploaded_file.name)[1].lower()
 
