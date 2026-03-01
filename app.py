@@ -65,12 +65,12 @@ st.title("🔢 Append Number to File")
 st.write("Upload a file and enter a number — the number will be appended at the end.")
 
 uploaded_file = st.file_uploader("Choose a file", type=["txt", "pdf", "docx"])
-number = st.number_input("Number to append", step=1)
+shift = st.number_input("Transpose (semitones): ", step=1)
 
 if uploaded_file and st.button("Process"):
     try:
         original_text = read_file(uploaded_file)
-        result_text = original_text + f"\n{int(number)}"
+        result_text = transpose_harmony(harmony_string, shift)
 
         with st.expander("Result preview"):
             st.text(result_text)
