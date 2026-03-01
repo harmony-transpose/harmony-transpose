@@ -76,11 +76,14 @@ if uploaded_file and st.button("Process"):
             st.text(result_text)
 
         output_bytes, mime = write_file(result_text, uploaded_file.name)
-
+        input_name = uploaded_file.name
+        ext = input_name.split('.')[-1].lower()
+        output_name = '.'.join(input_name.split('.')[:-1])
+        output_name +='-shifted_by' + str(shift) + '.'+ ext
         st.download_button(
             label="⬇️ Download file",
             data=output_bytes,
-            file_name="output_" + uploaded_file.name,
+            file_name=output_name,
             mime=mime
         )
 
