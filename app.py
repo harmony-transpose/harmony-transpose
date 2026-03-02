@@ -55,8 +55,8 @@ def write_file(text: str, original_filename: str):
 
 # ── UI ──────────────────────────────────────────
 
-st.set_page_config(page_title="Append Number to File", page_icon="🔢")
-st.title("🔢 Append Number to File")
+st.set_page_config(page_title="Harmony Transpose", page_icon="")
+st.title(" Harmony Transpose")
 st.write("Upload a file and enter requested tranposition:")
 
 uploaded_file = st.file_uploader("Choose a file", type=["txt", "pdf", "docx"])
